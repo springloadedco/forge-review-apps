@@ -47,8 +47,10 @@ class DeleteSite extends Command
     {
         $site = $this->getSite($this->domain);
 
-        $this->output->info('Deleting site...');
-        $this->forge->deleteSite($this->forgeServerId, $site->id);
+        if ($site) {
+            $this->output->info('Deleting site...');
+            $this->forge->deleteSite($this->forgeServerId, $site->id);
+        }
     }
 
     protected function deleteDatabase(): void
