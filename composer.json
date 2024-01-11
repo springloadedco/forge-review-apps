@@ -2,7 +2,7 @@
     "name": "springloadedco/forge-review-apps",
     "description": "A CLI tool for managing your review apps on Laravel Forge.",
     "keywords": ["forge", "laravel", "laravel zero", "console", "cli"],
-    "type": "project",
+    "type": "library",
     "license": "MIT",
     "support": {
         "issues": "https://github.com/springloadedco/forge-review-apps/issues",
