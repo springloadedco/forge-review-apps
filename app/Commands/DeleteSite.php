@@ -40,7 +40,7 @@ class DeleteSite extends Command
 
         $databases = collect($this->forge->databases($this->forgeServerId));
 
-        return $databases->first(fn (Database $database) => $database->name === $this->argument('branch'));
+        return $databases->first(fn (Database $database) => $database->name === $this->argument('subdomain'));
     }
 
     protected function deleteSite(): void
