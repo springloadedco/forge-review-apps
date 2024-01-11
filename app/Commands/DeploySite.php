@@ -18,7 +18,8 @@ class DeploySite extends Command
         {branch : The name of the branch to deploy}
         {subdomain : The subdomain to use for the site and the site\'s database)}
         {php-version : The PHP version to use (php82, php81, php80, php74)}
-        {env : Base64 encoded .env file to use for the site}';
+        {env : Base64 encoded .env file to use for the site}
+        {deployment-script? : The deployment script to use (optional)}';
 
     protected $description = 'Deploys the given branch to the server.';
 
@@ -84,6 +85,11 @@ class DeploySite extends Command
 
     protected function deploySite(Site $site): void
     {
+        if ($deploymentScript = $this->argument('deployment-script')) {
+            $this->output->info('Updating deployment script...');
+            $this->forge->updateSiteDeploymentScript($this->forgeServerId, $site->id, base64_decode($deploymentScript));
+        }
+
         $this->output->info('Updating site .env file...');
         $this->forge->updateSiteEnvironmentFile($this->forgeServerId, $site->id, base64_decode($this->argument('env')));
 
