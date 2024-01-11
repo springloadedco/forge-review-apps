@@ -15,7 +15,7 @@ class DeleteSite extends Command
         {forge-cli-token : The Forge CLI token to use}
         {forge-server-id : The Forge server ID to use}
         {root-domain : The root domain to use (example.com)}
-        {branch : The name of the branch to delete.}';
+        {subdomain : The subdomain of the site}';
 
     protected $description = 'Deletes the site on the server, including the database.';
 
@@ -24,7 +24,7 @@ class DeleteSite extends Command
     public function handle(): void
     {
         $this->buildForge();
-        $this->domain = $this->argument('branch') . '.' . $this->argument('root-domain');
+        $this->domain = $this->argument('subdomain') . '.' . $this->argument('root-domain');
 
         try {
             $this->deleteSite();

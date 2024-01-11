@@ -11,11 +11,12 @@ class DeploySite extends Command
 {
     protected $signature = 'app:deploy-site
         {forge-cli-token : The Forge CLI token to use}
-        {forge-server-id : The Forge server ID to use} 
+        {forge-server-id : The Forge server ID to use}
         {root-domain : The root domain to use (example.com)}
         {git-provider : The git provider to use (github, gitlab)}
         {repository : The repository to use (username/repository)}
-        {branch : The name of the branch to deploy (will be used for the subdomain and database name)}
+        {branch : The name of the branch to deploy}
+        {subdomain : The subdomain to use for the site and the site\'s database)}
         {php-version : The PHP version to use (php82, php81, php80, php74)}
         {env : Base64 encoded .env file to use for the site}';
 
@@ -29,7 +30,7 @@ class DeploySite extends Command
     public function handle(): void
     {
         $this->buildForge();
-        $this->domain = $this->argument('branch') . '.' . $this->argument('root-domain');
+        $this->domain = $this->argument('subdomain') . '.' . $this->argument('root-domain');
 
         try {
             $site = $this->getSite();
@@ -58,7 +59,7 @@ class DeploySite extends Command
 
         $site = $this->forge->createSite($this->forgeServerId, [
             'domain' => $this->domain,
-            'database' => $this->argument('branch'),
+            'database' => $this->argument('subdomain'),
             'project_type' => 'php',
             'php_version' => $this->argument('php-version'),
             'aliases' => [],
