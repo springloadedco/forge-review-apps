@@ -103,6 +103,6 @@ class DeploySite extends Command
             $this->forgeServerId = $this->ask('What is your Forge Server ID?');
         }
 
-        $this->forge = new Forge($this->forgeApiToken);
+        $this->forge = (new Forge($this->forgeApiToken))->setTimeout(180);
     }
 }
