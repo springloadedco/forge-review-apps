@@ -12,14 +12,19 @@ class DeleteSite extends Command
     use UseForgeSdk;
 
     protected $signature = 'app:delete-site
+        {forge-cli-token : The Forge CLI token to use}
+        {forge-server-id : The Forge server ID to use}
+        {root-domain : The root domain to use (example.com)}
         {branch : The name of the branch to delete.}';
 
     protected $description = 'Deletes the site on the server, including the database.';
 
+    protected string $domain;
+
     public function handle(): void
     {
         $this->buildForge();
-        $domain = $this->argument('branch') . '.' . config('forge.root_domain');
+        $this->domain = $this->argument('branch') . '.' . $this->argument('root-domain');
 
         try {
             $this->deleteSite();
@@ -40,8 +45,7 @@ class DeleteSite extends Command
 
     protected function deleteSite(): void
     {
-        $domain = $this->argument('branch') . '.' . config('forge.root_domain');
-        $site = $this->getSite($domain);
+        $site = $this->getSite($this->domain);
 
         $this->output->info('Deleting site...');
         $this->forge->deleteSite($this->forgeServerId, $site->id);

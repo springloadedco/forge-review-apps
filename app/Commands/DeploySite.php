@@ -10,6 +10,11 @@ use Laravel\Forge\Resources\Site;
 class DeploySite extends Command
 {
     protected $signature = 'app:deploy-site
+        {forge-cli-token : The Forge CLI token to use}
+        {forge-server-id : The Forge server ID to use} 
+        {root-domain : The root domain to use (example.com)}
+        {git-provider : The git provider to use (github, gitlab)}
+        {repository : The repository to use (username/repository)}
         {branch : The name of the branch to deploy (will be used for the subdomain and database name)}
         {php-version : The PHP version to use (php82, php81, php80, php74)}
         {env : Base64 encoded .env file to use for the site}';
@@ -24,7 +29,7 @@ class DeploySite extends Command
     public function handle(): void
     {
         $this->buildForge();
-        $this->domain = $this->argument('branch') . '.' . config('forge.root_domain');
+        $this->domain = $this->argument('branch') . '.' . $this->argument('root-domain');
 
         try {
             $site = $this->getSite();
@@ -63,8 +68,8 @@ class DeploySite extends Command
 
         $this->output->info('Site created, installing git repository...');
         $this->forge->installGitRepositoryOnSite($this->forgeServerId, $site->id, [
-            'provider' => config('forge.git_provider'),
-            'repository' => config('forge.repository'),
+            'provider' => $this->argument('git-provider'),
+            'repository' => $this->argument('repository'),
             'branch' => $this->argument('branch'),
             'composer' => true
          ]);
@@ -87,8 +92,8 @@ class DeploySite extends Command
 
     protected function buildForge(): void
     {
-        $this->forgeApiToken = config('forge.token');
-        $this->forgeServerId = config('forge.server_id');
+        $this->forgeApiToken = $this->argument('forge-cli-token');
+        $this->forgeServerId = $this->argument('forge-server-id');
 
         if (empty($this->forgeApiToken)) {
             $this->forgeApiToken = $this->ask('What is your Forge API token?');

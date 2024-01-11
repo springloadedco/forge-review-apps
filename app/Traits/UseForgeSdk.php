@@ -23,8 +23,8 @@ trait UseForgeSdk {
 
     protected function buildForge(): void
     {
-        $this->forgeApiToken = config('forge.token');
-        $this->forgeServerId = config('forge.server_id');
+        $this->forgeApiToken = $this->argument('forge-cli-token');
+        $this->forgeServerId = $this->argument('forge-server-id');
 
         if (empty($this->forgeApiToken)) {
             $this->forgeApiToken = $this->ask('What is your Forge API token?');
