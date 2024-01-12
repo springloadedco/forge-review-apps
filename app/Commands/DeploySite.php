@@ -34,7 +34,7 @@ class DeploySite extends Command
     {
         $this->buildForge();
         $this->domain = $this->argument('subdomain') . '.' . $this->argument('root-domain');
-        $this->databaseName = Str::replace($this->argument('subdomain'), '-', '_');
+        $this->databaseName = Str::replace('-', '_', $this->argument('subdomain'));
 
         try {
             $site = $this->getSite();
@@ -59,8 +59,7 @@ class DeploySite extends Command
 
     protected function createSite(): Site
     {
-        $this->output->info('Site not found, creating site...');
-
+        $this->output->info('Site not found, creating site... ' . $this->domain . ' ' . $this->databaseName);
         $site = $this->forge->createSite($this->forgeServerId, [
             'domain' => $this->domain,
             'database' => $this->databaseName,
@@ -79,6 +78,7 @@ class DeploySite extends Command
             'composer' => true
          ]);
 
+        $this->output->info('Installing Let\'s Encrypt certificate...');
         $this->forge->obtainLetsEncryptCertificate($this->forgeServerId, $site->id, [
             'domains' => [$this->domain]
         ], $wait = true);

@@ -27,7 +27,7 @@ class DeleteSite extends Command
     {
         $this->buildForge();
         $this->domain = $this->argument('subdomain') . '.' . $this->argument('root-domain');
-        $this->databaseName = Str::replace($this->argument('subdomain'), '-', '_');
+        $this->databaseName = Str::replace('-', '_', $this->argument('subdomain'));
 
         try {
             $this->deleteSite();
