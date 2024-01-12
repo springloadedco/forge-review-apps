@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use App\Traits\UseForgeSdk;
+use Illuminate\Support\Str;
 use LaravelZero\Framework\Commands\Command;
 use Laravel\Forge\Exceptions\ValidationException;
 use Laravel\Forge\Resources\Database;
@@ -20,11 +21,13 @@ class DeleteSite extends Command
     protected $description = 'Deletes the site on the server, including the database.';
 
     protected string $domain;
+    protected string $databaseName;
 
     public function handle(): void
     {
         $this->buildForge();
         $this->domain = $this->argument('subdomain') . '.' . $this->argument('root-domain');
+        $this->databaseName = Str::replace($this->argument('subdomain'), '-', '_');
 
         try {
             $this->deleteSite();
@@ -34,13 +37,13 @@ class DeleteSite extends Command
         }
     }
 
-    protected function getDatabase(): Database
+    protected function getDatabase(): ?Database
     {
         $this->output->info('Checking for database...');
 
         $databases = collect($this->forge->databases($this->forgeServerId));
 
-        return $databases->first(fn (Database $database) => $database->name === $this->argument('subdomain'));
+        return $databases->first(fn (Database $database) => $database->name === $this->databaseName);
     }
 
     protected function deleteSite(): void

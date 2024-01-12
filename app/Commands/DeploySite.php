@@ -2,6 +2,7 @@
 
 namespace App\Commands;
 
+use Illuminate\Support\Str;
 use LaravelZero\Framework\Commands\Command;
 use Laravel\Forge\Exceptions\ValidationException;
 use Laravel\Forge\Forge;
@@ -24,6 +25,7 @@ class DeploySite extends Command
     protected $description = 'Deploys the given branch to the server.';
 
     protected string $domain;
+    protected string $databaseName;
     protected Forge $forge;
     protected string $forgeApiToken;
     protected string $forgeServerId;
@@ -32,6 +34,7 @@ class DeploySite extends Command
     {
         $this->buildForge();
         $this->domain = $this->argument('subdomain') . '.' . $this->argument('root-domain');
+        $this->databaseName = Str::replace($this->argument('subdomain'), '-', '_');
 
         try {
             $site = $this->getSite();
@@ -60,7 +63,7 @@ class DeploySite extends Command
 
         $site = $this->forge->createSite($this->forgeServerId, [
             'domain' => $this->domain,
-            'database' => $this->argument('subdomain'),
+            'database' => $this->databaseName,
             'project_type' => 'php',
             'php_version' => $this->argument('php-version'),
             'aliases' => [],
