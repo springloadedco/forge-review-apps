@@ -97,7 +97,7 @@ class DeploySite extends Command
         $this->forge->updateSiteEnvironmentFile($this->forgeServerId, $site->id, base64_decode($this->argument('env')));
 
         $this->output->info('Deploying site...');
-        $this->forge->deploySite($this->forgeServerId, $site->id);
+        $this->forge->deploySite($this->forgeServerId, $site->id, false);
     }
 
     protected function buildForge(): void
